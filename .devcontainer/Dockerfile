@@ -33,3 +33,6 @@ RUN wget -q https://software-dl.ti.com/codegen/esd/cgt_public_sw/TMS470/20.2.5.L
 
 # Install Tivaware
 ADD build/TivaWare_C_Series-2.2.0.295 /opt/TivaWare_C_Series-2.2.0.295
+
+# Allow opt dir to be written
+RUN chmod -R 777 /opt
