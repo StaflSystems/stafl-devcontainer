@@ -11,7 +11,7 @@ ARG TARGETPLATFORM
 VOLUME /home/vscode
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends clang g++ lcov gdb ninja-build wget bzip2 python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 \
+    && apt-get -y install --no-install-recommends clang g++ lcov gdb ninja-build wget bzip2 python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml \
     && pip install cmake
 
 WORKDIR /opt
