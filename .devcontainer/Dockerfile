@@ -8,10 +8,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 ARG VARIANT
 ARG TARGETPLATFORM
 
-VOLUME /home/vscode
-
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends clang g++ lcov gdb ninja-build wget bzip2 python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 \
+    && apt-get -y install --no-install-recommends clang g++ lcov gdb ninja-build wget bzip2 python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make \
     && pip install cmake
 
 WORKDIR /opt
@@ -29,10 +27,9 @@ RUN case ${TARGETPLATFORM} in \
 RUN wget -q https://software-dl.ti.com/codegen/esd/cgt_public_sw/TMS470/20.2.5.LTS/ti_cgt_tms470_20.2.5.LTS_linux-x64_installer.bin -O ti-cgt-installer.bin \
     && chmod +x ti-cgt-installer.bin \
     && ./ti-cgt-installer.bin --mode=unattended --prefix /opt/ti-cgt-arm \
-    && rm ti-cgt-installer.bin
+    && rm ti-cgt-installer.bin \
+    && PATH=/opt/ti-cgt-arm/ti-cgt-arm_20.2.5.LTS/bin:$PATH /opt/ti-cgt-arm/ti-cgt-arm_20.2.5.LTS/lib/mklib --pattern=rtsv7M4_T_le_v4SPD16_eabi_eh.lib \
+    && chmod -R 777 /opt/ti-cgt-arm
 
 # Install Tivaware
 ADD build/TivaWare_C_Series-2.2.0.295 /opt/TivaWare_C_Series-2.2.0.295
-
-# Allow opt dir to be written
-RUN chmod -R 777 /opt
