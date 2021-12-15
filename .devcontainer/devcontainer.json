@@ -37,5 +37,9 @@
 		"git-lfs": "latest",
 		"sshd": "latest",
 		"python": "3.9"
-	}
+	},
+
+	"mounts": [
+		"source=stafl-devcontainer-data,target=/home/vscode,type=volume"
+	]
 }
