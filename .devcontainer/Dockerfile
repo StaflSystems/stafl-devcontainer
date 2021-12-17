@@ -2,7 +2,7 @@
 
 # [Choice] Ubuntu version (use hirsuite or bionic on local arm64/Apple Silicon): hirsute, focal, bionic
 ARG VARIANT="hirsute"
-ARG TARGETPLATFORM="linux/arm64" # Run with BuildKit backend to populate automatically
+# ARG TARGETPLATFORM="linux/amd64" # Run with BuildKit backend to populate automatically
 
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 ARG VARIANT
