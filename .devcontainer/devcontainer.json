@@ -40,6 +40,16 @@
 	},
 
 	"mounts": [
-		"source=stafl-devcontainer-data,target=/home/vscode,type=volume"
-	]
+		"source=stafl-devcontainer-data,target=/home/vscode,type=volume",
+		"source=/mnt/wslg,target=/mnt/wslg,type=bind", // comment out if not on Windows 11
+		"source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind" // comment out if not on Windows 11
+	],
+
+	// comment out if not on Windows 11
+	"containerEnv": {
+		"DISPLAY": ":0",
+		"PULSE_SERVER": "/mnt/wslg/PulseServer",
+		"WAYLAND_DISPLAY": "wayland-0",
+		"XDG_RUNTIME_DIR": "/mnt/wslg/runtime-dir"
+	}
 }
