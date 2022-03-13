@@ -1,8 +1,6 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.205.1/containers/ubuntu/.devcontainer/base.Dockerfile
 
-# [Choice] Ubuntu version (use hirsuite or bionic on local arm64/Apple Silicon): hirsute, focal, bionic
 ARG VARIANT="hirsute"
-ARG TARGETPLATFORM="linux/amd64" # Run with BuildKit backend to populate automatically
 
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 ARG VARIANT
@@ -23,13 +21,20 @@ RUN case ${TARGETPLATFORM} in \
     && tar -xjf gcc-arm-none-eabi.tar.bz2 \
     && rm gcc-arm-none-eabi.tar.bz2
 
-# Install TI CGT ARM
-RUN wget -q https://software-dl.ti.com/codegen/esd/cgt_public_sw/TMS470/20.2.5.LTS/ti_cgt_tms470_20.2.5.LTS_linux-x64_installer.bin -O ti-cgt-installer.bin \
-    && chmod +x ti-cgt-installer.bin \
-    && ./ti-cgt-installer.bin --mode=unattended --prefix /opt/ti-cgt-arm \
-    && rm ti-cgt-installer.bin \
-    && PATH=/opt/ti-cgt-arm/ti-cgt-arm_20.2.5.LTS/bin:$PATH /opt/ti-cgt-arm/ti-cgt-arm_20.2.5.LTS/lib/mklib --pattern=rtsv7M4_T_le_v4SPD16_eabi_eh.lib \
-    && chmod -R 777 /opt/ti-cgt-arm
-
+# # Install TI CGT ARM
+RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
+      echo "Installing TI CGT TMS470" \
+      && wget -q https://software-dl.ti.com/codegen/esd/cgt_public_sw/TMS470/20.2.5.LTS/ti_cgt_tms470_20.2.5.LTS_linux-x64_installer.bin -O ti-cgt-installer.bin \
+      && chmod +x ti-cgt-installer.bin \
+      && ./ti-cgt-installer.bin --mode=unattended --prefix /opt/ti-cgt-arm \
+      && rm ti-cgt-installer.bin \
+      && PATH=/opt/ti-cgt-arm/ti-cgt-arm_20.2.5.LTS/bin:$PATH /opt/ti-cgt-arm/ti-cgt-arm_20.2.5.LTS/lib/mklib --pattern=rtsv7M4_T_le_v4SPD16_eabi_eh.lib \
+      && chmod -R 777 /opt/ti-cgt-arm; \
+    else \
+      echo "skipping TI CGT TMS470. Not supported on arm64"; \
+    fi
 # Install Tivaware
 ADD build/TivaWare_C_Series-2.2.0.295 /opt/TivaWare_C_Series-2.2.0.295
+
+# Allow opt dir to be written
+RUN chmod -R -v 777 /opt
