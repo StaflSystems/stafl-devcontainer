@@ -7,7 +7,7 @@ ARG VARIANT
 ARG TARGETPLATFORM
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends clang g++ lcov gdb ninja-build wget bzip2 python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make \
+    && apt-get -y install --no-install-recommends clang g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make \
     && pip install cmake
 
 WORKDIR /opt
@@ -19,7 +19,9 @@ RUN case ${TARGETPLATFORM} in \
     esac \
     && wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-$GCC_ARM_ARCH-linux.tar.bz2 -O gcc-arm-none-eabi.tar.bz2 \
     && tar -xjf gcc-arm-none-eabi.tar.bz2 \
-    && rm gcc-arm-none-eabi.tar.bz2
+    && rm gcc-arm-none-eabi.tar.bz2 \
+    && mv gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb-non-py \
+    && ln -s /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb-py /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb
 
 # # Install TI CGT ARM
 RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
