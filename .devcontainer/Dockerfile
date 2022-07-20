@@ -7,8 +7,9 @@ ARG VARIANT
 ARG TARGETPLATFORM
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends clang g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make \
-    && pip install cmake
+    && apt-get -y install --no-install-recommends clang llvm-12 g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make \
+    && pip install cmake \
+    && ln -s /usr/bin/llvm-cov-12 /usr/bin/llvm-cov
 
 WORKDIR /opt
 
