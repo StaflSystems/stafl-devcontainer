@@ -4,17 +4,13 @@
 	"name": "Ubuntu",
 	"build": {
 		"dockerfile": "Dockerfile",
-		// Update 'VARIANT' to pick an Ubuntu version: hirsute, focal, bionic
-		// Use hirsute or bionic on local arm64/Apple Silicon.
-		"args": { "VARIANT": "jammy",
-              "DOCKER_BUILDKIT": "1"
-    }
+		"args": {
+			"VARIANT": "jammy",
+			"DOCKER_BUILDKIT": "1"
+		}
 	},
-
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},
-
-
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-vscode.cpptools",
@@ -25,25 +21,20 @@
 		"ms-vscode-remote.vscode-remote-extensionpack",
 		"gruntfuggly.todo-tree"
 	],
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "uname -a",
-
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode",
 	"features": {
 		"sshd": "latest"
 	},
-
 	"mounts": [
 		"source=stafl-devcontainer-data,target=/home/vscode,type=volume",
 		"source=/mnt/wslg,target=/mnt/wslg,type=bind", // comment out if not on Windows 11
 		"source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind" // comment out if not on Windows 11
 	],
-
 	// comment out if not on Windows 11
 	"containerEnv": {
 		"DISPLAY": ":0",
