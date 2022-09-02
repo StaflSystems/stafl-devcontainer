@@ -9,7 +9,8 @@ ARG TARGETPLATFORM
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends clang llvm-14 clang-format-14 g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make \
     && pip install cmake \
-    && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov
+    && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
+    && pip install breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml
 
 WORKDIR /opt
 
@@ -41,3 +42,14 @@ ADD build/TivaWare_C_Series-2.2.0.295 /opt/TivaWare_C_Series-2.2.0.295
 
 # Allow opt dir to be written
 RUN chmod -R -v 777 /opt
+
+# Set up doxygen
+ARG DOXYGEN_VERSION="1.9.5"
+ARG DOXYGEN_ARCHIVE="doxygen-$DOXYGEN_VERSION.linux.bin.tar.gz"
+ARG DOXYGEN_URL="https://www.doxygen.nl/files/$DOXYGEN_ARCHIVE"
+
+WORKDIR /tmp
+RUN wget "$DOXYGEN_URL" && tar -xzf "$DOXYGEN_ARCHIVE" && cd doxygen-"$DOXYGEN_VERSION" && make install
+
+# Add user setup scripts
+COPY user-setup-scripts /user-setup-scripts
