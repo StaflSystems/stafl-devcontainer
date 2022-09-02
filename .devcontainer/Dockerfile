@@ -1,7 +1,6 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.205.1/containers/ubuntu/.devcontainer/base.Dockerfile
 
 ARG VARIANT="jammy"
-ARG DOXYGEN_VERSION="1.9.5"
 
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 ARG VARIANT
@@ -45,11 +44,12 @@ ADD build/TivaWare_C_Series-2.2.0.295 /opt/TivaWare_C_Series-2.2.0.295
 RUN chmod -R -v 777 /opt
 
 # Set up doxygen
+ARG DOXYGEN_VERSION="1.9.5"
 ARG DOXYGEN_ARCHIVE="doxygen-$DOXYGEN_VERSION.linux.bin.tar.gz"
 ARG DOXYGEN_URL="https://www.doxygen.nl/files/$DOXYGEN_ARCHIVE"
 
 WORKDIR /tmp
-RUN wget $DOXYGEN_URL && gzip -xzf $DOXYGEN_ARCHIVE && cd doxygen-$DOXYGEN_VERSION && make install
+RUN wget "$DOXYGEN_URL" && tar -xzf "$DOXYGEN_ARCHIVE" && cd doxygen-"$DOXYGEN_VERSION" && make install
 
 # Add user setup scripts
 COPY user-setup-scripts /user-setup-scripts
