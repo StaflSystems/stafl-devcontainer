@@ -11,7 +11,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends clang llvm-14 clang-format-14 g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make \
     && pip install cmake \
     && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
-    && pip install sphinx && pip install breathe && pip install sphinx_rtd_theme && pip install sphinxcontrib-plantuml
+    && pip install breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml
 
 WORKDIR /opt
 
