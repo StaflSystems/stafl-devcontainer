@@ -52,4 +52,4 @@ WORKDIR /tmp
 RUN wget $DOXYGEN_URL && gzip -xzf $DOXYGEN_ARCHIVE && cd doxygen-$DOXYGEN_VERSION && make install
 
 # Add user setup scripts
-ADD user-setup-scripts /user-setup-scripts
+COPY user-setup-scripts /user-setup-scripts
