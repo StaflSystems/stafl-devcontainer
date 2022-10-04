@@ -6,11 +6,20 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 ARG VARIANT
 ARG TARGETPLATFORM
 
+# Add user setup scripts
+ADD user-setup-scripts /user-setup-scripts
+
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends clang llvm-14 clang-format-14 g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make \
-    && pip install cmake \
+    && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common \
+    && pip install cmake breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml \
     && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
-    && pip install breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml
+    && add-apt-repository ppa:mozillateam/ppa \
+    && cat /user-setup-scripts/firefox/firefox-pin.txt > /etc/apt/preferences.d/mozilla-firefox \
+    && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${VARIANT}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
+    && curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - \
+    && apt-get update \
+    && apt-get -y install --no-install-recommends nodejs firefox
+
 
 WORKDIR /opt
 
@@ -50,6 +59,3 @@ ARG DOXYGEN_URL="https://www.doxygen.nl/files/$DOXYGEN_ARCHIVE"
 
 WORKDIR /tmp
 RUN wget "$DOXYGEN_URL" && tar -xzf "$DOXYGEN_ARCHIVE" && cd doxygen-"$DOXYGEN_VERSION" && make install
-
-# Add user setup scripts
-COPY user-setup-scripts /user-setup-scripts
