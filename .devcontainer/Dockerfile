@@ -48,8 +48,6 @@ RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
     else \
       echo "skipping TI CGT TMS470. Not supported on arm64"; \
     fi
-# Install Tivaware
-ADD build/TivaWare_C_Series-2.2.0.295 /opt/TivaWare_C_Series-2.2.0.295
 
 # Allow opt dir to be written
 RUN chmod -R -v 777 /opt
