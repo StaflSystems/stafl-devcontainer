@@ -20,7 +20,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${VARIANT}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
     && curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - \
     && apt-get update \
-    && apt-get -y install --no-install-recommends nodejs firefox chromium-browser
+    && apt-get -y install --no-install-recommends nodejs firefox chromium-browser \
+    && npm -g install https://github.com/maphstr/mdpdf.git
 
 
 WORKDIR /opt
