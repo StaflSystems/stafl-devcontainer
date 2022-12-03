@@ -14,6 +14,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common \
     && pip install cmake breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml \
     && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
+    && ln -s /usr/bin/llvm-profdata-14 /usr/bin/llvm-profdata \
     && add-apt-repository -y -n ppa:mozillateam/ppa \
     && add-apt-repository -y -n ppa:saiarcot895/chromium-beta \
     && cat /user-setup-scripts/firefox/firefox-pin.txt > /etc/apt/preferences.d/mozilla-firefox \
