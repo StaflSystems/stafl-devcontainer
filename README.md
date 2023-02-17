@@ -6,7 +6,7 @@ See [confluence page](https://staflsystems.atlassian.net/wiki/spaces/EM/pages/19
 
 ## Publishing New Container Image for CI
 
-1. If the token you created when you first pulled the dev-container has read AND write permissions for packages, skip to step 5.
+1. If the token you created when you first pulled the dev-container has read AND write permissions for packages, skip to step 4.
 
 2. [Create a personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with read AND write permissions for packages.
 
