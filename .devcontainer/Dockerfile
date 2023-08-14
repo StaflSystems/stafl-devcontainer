@@ -11,7 +11,7 @@ ADD user-setup-scripts /user-setup-scripts
 
 RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
-  && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common \
+  && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 doxygen g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common udev \
   && pip install cmake breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml \
   && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
   && ln -s /usr/bin/llvm-profdata-14 /usr/bin/llvm-profdata \
@@ -56,10 +56,3 @@ RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
 # Allow opt dir to be written
 RUN chmod -R -v 777 /opt
 
-# Set up doxygen
-ARG DOXYGEN_VERSION="1.9.5"
-ARG DOXYGEN_ARCHIVE="doxygen-$DOXYGEN_VERSION.linux.bin.tar.gz"
-ARG DOXYGEN_URL="https://www.doxygen.nl/files/$DOXYGEN_ARCHIVE"
-
-WORKDIR /tmp
-RUN wget "$DOXYGEN_URL" && tar -xzf "$DOXYGEN_ARCHIVE" && cd doxygen-"$DOXYGEN_VERSION" && make install
