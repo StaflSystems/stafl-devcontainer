@@ -26,7 +26,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash \
   && sudo apt-get install git-lfs
 
-
 WORKDIR /opt
 
 # Install GCC ARM
@@ -55,4 +54,20 @@ RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
 
 # Allow opt dir to be written
 RUN chmod -R -v 777 /opt
+
+WORKDIR /
+
+#### Install jlink ####
+# URLs copied from https://www.segger.com/downloads/jlink/
+ARG JLINK_URL_x86_64="https://www.segger.com/downloads/jlink/JLink_Linux_V792_x86_64.deb"
+ARG JLINK_URL_ARM="https://www.segger.com/downloads/jlink/JLink_Linux_V792_arm64.deb"
+
+RUN case ${TARGETPLATFORM} in \
+  "linux/amd64") JLINK_URL=$JLINK_URL_x86_64 ;; \
+  "linux/arm64") JLINK_URL=$JLINK_URL_ARM ;; \
+  esac \
+  && sudo wget -q "$JLINK_URL" --post-data="accept_license_agreement=accepted" -O ./jlink_install.deb \
+  && sudo /lib/systemd/systemd-udevd --daemon \
+  && sudo apt install -y ./jlink_install.deb \
+  # && rm ./jlink_install.deb
 
