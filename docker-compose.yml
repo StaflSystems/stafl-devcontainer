@@ -5,6 +5,8 @@ services:
     image: "ghcr.io/staflsystems/stafl-devcontainer-ci:latest"
     command: sleep infinity
     network_mode: service:kroki
+    volumes:
+      - ..:/workspaces:cached
   kroki:
     image: yuzutech/kroki:latest
     ports:
