@@ -1,14 +1,23 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.205.1/containers/ubuntu
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
 {
-	"name": "Ubuntu",
-	// "image": "ghcr.io/staflsystems/stafl-devcontainer-ci",
-	"dockerComposeFile": "../docker-compose.yml",
+	"name": "Stafl Devcontainer w/ Kroki",
+
+	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
+	// The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
+	"dockerComposeFile": [
+		"../docker-compose.yml",
+		"docker-compose.yml"
+	],
+
+	// The 'service' property is the name of the service for the container that VS Code should
+	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
 	"service": "stafl-devcontainer",
-	"workspaceFolder": "/workspaces/stafl-devcontainer",
-	// Set *default* container specific settings.json values on container create.
-	"settings": {},
-	// Add the IDs of extensions you want installed when the container is created.
+
+	// The optional 'workspaceFolder' property is the path VS Code should open by default when
+	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
 	"extensions": [
 		"ms-vscode.cpptools",
 		"twxs.cmake",
@@ -18,11 +27,7 @@
 		"ms-vscode-remote.vscode-remote-extensionpack",
 		"gruntfuggly.todo-tree"
 	],
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
-	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	
 	"remoteUser": "vscode",
 	"mounts": [
 		"source=stafl-devcontainer-data,target=/home/vscode,type=volume",
