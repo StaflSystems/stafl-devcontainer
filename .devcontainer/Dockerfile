@@ -69,5 +69,5 @@ RUN case ${TARGETPLATFORM} in \
   && sudo wget -q "$JLINK_URL" --post-data="accept_license_agreement=accepted" -O ./jlink_install.deb \
   && sudo /lib/systemd/systemd-udevd --daemon \
   && sudo apt install -y ./jlink_install.deb \
-  # && rm ./jlink_install.deb
+  && rm ./jlink_install.deb
 
