@@ -4,13 +4,7 @@ services:
   stafl-devcontainer:
     image: "ghcr.io/staflsystems/stafl-devcontainer-ci"
     environment:
-      - STRUCTURIZR_HOST=structurizr
       - KROKI_HOST=kroki
-  structurizr:
-    image: structurizr/onpremises:latest
-    restart: unless-stopped
-    ports: 
-      - 8080:8080
   kroki:
     image: yuzutech/kroki:latest
     ports:
