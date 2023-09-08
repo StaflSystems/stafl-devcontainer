@@ -3,8 +3,8 @@ version: '3.9'
 services:
   stafl-devcontainer:
     image: "ghcr.io/staflsystems/stafl-devcontainer-ci:latest"
-    environment:
-      - KROKI_HOST=kroki
+    command: sleep infinity
+    network_mode: service:kroki
   kroki:
     image: yuzutech/kroki:latest
     ports:
