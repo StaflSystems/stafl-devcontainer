@@ -71,3 +71,9 @@ RUN case ${TARGETPLATFORM} in \
   && sudo apt install -y ./jlink_install.deb \
   && rm ./jlink_install.deb
 
+ARG STRUCTURIZR_CLI_URL="https://github.com/structurizr/cli/releases/download/v1.33.1/structurizr-cli-1.33.1.zip"
+RUN sudo wget -q "${STRUCTURIZR_CLI_URL}" -O ./structurizr.zip \
+    && sudo unzip structurizr.zip -d /usr/bin/structurizr  \
+    && sudo ln -s /usr/bin/structurizr/structurizr.sh /usr/bin/structurizr/structurizr \
+    && PATH=/usr/bin/structurizr:$PATH \ 
+    && sudo rm structurizr.zip
