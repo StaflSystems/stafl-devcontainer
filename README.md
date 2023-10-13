@@ -13,9 +13,9 @@ See [confluence page](https://staflsystems.atlassian.net/wiki/spaces/EM/pages/19
 3. Login using the token you've just created by running:  
 `docker login ghcr.io -u <your_github_username> -p <your token>`
 
-4. Navigate to the `stafl-devcontainer` folder in your host machine (do not do this within your container, it has to be through your host machine whether it's in Windows, WSL, or MacOS) and open a terminal inside the `.devcontainer` folder
+4. Navigate to the `stafl-devcontainer` folder in your host machine (do not do this within your container, it has to be through your host machine whether it's in Windows, WSL, or MacOS) and open a terminal inside the `stafl-devcontainer` folder
 
-5. From the `.devcontainer` folder, run:  
+5. From the `stafl-devcontainer` folder, run:  
 `docker build -t ghcr.io/staflsystems/stafl-devcontainer-ci .`  
 (this will take 10+ minutes)
 
@@ -27,9 +27,9 @@ See [confluence page](https://staflsystems.atlassian.net/wiki/spaces/EM/pages/19
 
 1. Make sure your personal access token has package read access (if you followed the [setup steps](https://staflsystems.atlassian.net/wiki/spaces/EM/pages/196673537/Stafl+DevContainer), it should already have it).
 
-2. Navigate to the `stafl-devcontainer` folder in your host machine (do not do this within your container, it has to be through your host machine whether it's in Windows, WSL, or MacOS) and open a terminal inside the `.devcontainer` folder
+2. Navigate to the `stafl-devcontainer` folder in your host machine (do not do this within your container, it has to be through your host machine whether it's in Windows, WSL, or MacOS) and open a terminal inside the `stafl-devcontainer` folder
 
-3. From the `.devcontainer` folder, run:  
+3. From the `stafl-devcontainer` folder, run:  
 `docker pull ghcr.io/staflsystems/stafl-devcontainer-ci:latest`  
 (This may take a few minutes. Use a wired ethernet connection for a faster download)
 

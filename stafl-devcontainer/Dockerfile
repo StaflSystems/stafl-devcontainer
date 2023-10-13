@@ -12,7 +12,7 @@ ADD user-setup-scripts /user-setup-scripts
 RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
   && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 doxygen g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common udev \
-  && pip install cmake breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml \
+  && pip install cmake breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml sphinxcontrib-kroki \
   && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
   && ln -s /usr/bin/llvm-profdata-14 /usr/bin/llvm-profdata \
   && add-apt-repository -y -n ppa:mozillateam/ppa \
@@ -71,3 +71,9 @@ RUN case ${TARGETPLATFORM} in \
   && sudo apt install -y ./jlink_install.deb \
   && rm ./jlink_install.deb
 
+ARG STRUCTURIZR_CLI_URL="https://github.com/structurizr/cli/releases/download/v1.33.1/structurizr-cli-1.33.1.zip"
+RUN sudo wget -q "${STRUCTURIZR_CLI_URL}" -O ./structurizr.zip \
+    && sudo unzip structurizr.zip -d /usr/bin/structurizr  \
+    && sudo ln -s /usr/bin/structurizr/structurizr.sh /usr/bin/structurizr/structurizr \
+    && PATH=/usr/bin/structurizr:$PATH \ 
+    && sudo rm structurizr.zip
