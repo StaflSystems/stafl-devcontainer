@@ -15,21 +15,10 @@
 
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"workspaceFolder": "/home/vscode",
 
-	"extensions": [
-		"ms-vscode.cpptools",
-		"twxs.cmake",
-		"fredericbonnet.cmake-test-adapter",
-		"ms-vscode.cmake-tools",
-		"cschlosser.doxdocgen",
-		"ms-vscode-remote.vscode-remote-extensionpack",
-		"gruntfuggly.todo-tree"
-	],
-	
 	"remoteUser": "vscode",
 	"mounts": [
-		"source=stafl-devcontainer-data,target=/home/vscode,type=volume",
 		// "src=/home/<YOUR_WSL_USERNAME>/projects,target=/home/vscode/projects,type=bind", // Replace with you WSL username
 		"source=/mnt/wslg,target=/mnt/wslg,type=bind", // comment out if not on Windows 11
 		"source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind" // comment out if not on Windows 11
@@ -41,5 +30,5 @@
 		"WAYLAND_DISPLAY": "wayland-0",
 		"XDG_RUNTIME_DIR": "/mnt/wslg/runtime-dir"
 	},
-	"shutdownAction": "stopCompose",
+	"shutdownAction": "stopCompose"
 }
