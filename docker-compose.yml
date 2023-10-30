@@ -7,10 +7,15 @@ services:
     network_mode: service:kroki
     volumes:
       - ..:/workspaces:cached
+      - data:/home/vscode
   kroki:
     image: yuzutech/kroki:latest
     ports:
       - 8000:8000
+
+volumes:
+  data:
+    name: stafl-devcontainer-data
 
 
 
