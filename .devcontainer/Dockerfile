@@ -63,3 +63,11 @@ ARG DOXYGEN_URL="https://www.doxygen.nl/files/$DOXYGEN_ARCHIVE"
 
 WORKDIR /tmp
 RUN wget "$DOXYGEN_URL" && tar -xzf "$DOXYGEN_ARCHIVE" && cd doxygen-"$DOXYGEN_VERSION" && make install
+
+RUN apt update && apt dist-upgrade -y
+RUN apt install -y --no-install-recommends \
+    x11-apps \
+    lsb-core \
+    libaio1 \
+    libxcb-xinerama0 \
+    libxcb-xinput0
