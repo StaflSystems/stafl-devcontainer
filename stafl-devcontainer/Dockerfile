@@ -19,12 +19,17 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && add-apt-repository -y -n ppa:saiarcot895/chromium-beta \
   && cat /user-setup-scripts/firefox/firefox-pin.txt > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${VARIANT}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
-  && curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - \
+  && sudo apt-get install -y ca-certificates curl gnupg \
+  && sudo mkdir -p /etc/apt/keyrings \ 
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+  && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list \
   && apt-get update \
   && apt-get -y install --no-install-recommends nodejs firefox chromium-browser \
   && npm -g install https://github.com/maphstr/mdpdf.git \
   && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash \
-  && sudo apt-get install git-lfs
+  && sudo apt-get install git-lfs \
+  && sudo apt-get -y install --no-install-recommends ksh \
+  && sudo apt-get -y install --no-install-recommends bash-completion
 
 WORKDIR /opt
 
