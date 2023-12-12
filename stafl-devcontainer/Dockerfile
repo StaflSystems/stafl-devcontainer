@@ -26,7 +26,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
   && apt-get -y install --no-install-recommends nodejs firefox chromium-browser \
   && npm -g install https://github.com/maphstr/mdpdf.git \
-  && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+  && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash \
+  && npm install -g @withgraphite/graphite-cli@stable
 
 WORKDIR /opt
 
