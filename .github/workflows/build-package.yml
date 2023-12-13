@@ -21,12 +21,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Determine Version
-        # if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         id: staflversion
         uses: StaflSystems/CustomGithubActions/DetermineVersion@main
       
       - name: Display Version
-        # if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         run: |
           echo "Version: ${{steps.staflversion.outputs.full}}"
 
@@ -37,6 +37,7 @@ jobs:
           images: ghcr.io/staflsystems/stafl-devcontainer-ci
       
       - name: Build and push Docker image
+        if: github.ref != 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           context: ${{ github.workspace }}/stafl-devcontainer
@@ -45,6 +46,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build and push Docker image
+        if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           context: ${{ github.workspace }}/stafl-devcontainer
@@ -55,8 +57,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Create a GitHub release (main)
-        # if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         uses: StaflSystems/release-action@main
         with:
-          tag: ${{steps.staflversion.outputs.full}}
+          tag: ${{ steps.staflversion.outputs.major }}.${{ steps.staflversion.outputs.minor }}.${{ steps.staflversion.outputs.patch }}-${{ steps.staflversion.outputs.build }}
           commit: ${{ github.sha }}
