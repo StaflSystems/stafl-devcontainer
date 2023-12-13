@@ -1,0 +1,62 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches: ['main']
+  pull_request:  
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine Version
+        # if: github.ref == 'refs/heads/main'
+        id: staflversion
+        uses: StaflSystems/CustomGithubActions/DetermineVersion@main
+      
+      - name: Display Version
+        # if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Version: ${{steps.staflversion.outputs.full}}"
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/staflsystems/stafl-devcontainer-ci
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ github.workspace }}/stafl-devcontainer
+          push: false
+          tags: ghcr.io/staflsystems/stafl-devcontainer-ci
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ github.workspace }}/stafl-devcontainer
+          push: true
+          tags: | 
+            ghcr.io/staflsystems/stafl-devcontainer-ci:latest
+            ghcr.io/staflsystems/stafl-devcontainer-ci:${{ steps.staflversion.outputs.major }}.${{ steps.staflversion.outputs.minor }}.${{ steps.staflversion.outputs.patch }}-${{ steps.staflversion.outputs.build }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Create a GitHub release (main)
+        # if: github.ref == 'refs/heads/main'
+        uses: StaflSystems/release-action@main
+        with:
+          tag: ${{steps.staflversion.outputs.full}}
+          commit: ${{ github.sha }}
