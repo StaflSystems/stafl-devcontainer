@@ -11,7 +11,8 @@ ADD user-setup-scripts /user-setup-scripts
 
 RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
-  && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 doxygen g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common udev \
+  && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 doxygen g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common udev ksh ripgrep bash-completion ca-certificates curl gnupg dos2unix\
+  && find -path '/user-setup-scripts/*' | xargs dos2unix \
   && pip install cmake breathe sphinx sphinx_rtd_theme sphinxcontrib-plantuml sphinxcontrib-kroki \
   && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
   && ln -s /usr/bin/llvm-profdata-14 /usr/bin/llvm-profdata \
@@ -19,12 +20,15 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && add-apt-repository -y -n ppa:saiarcot895/chromium-beta \
   && cat /user-setup-scripts/firefox/firefox-pin.txt > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${VARIANT}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
-  && curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash - \
-  && apt-get update \
-  && apt-get -y install --no-install-recommends nodejs firefox chromium-browser \
-  && npm -g install https://github.com/maphstr/mdpdf.git \
+  && sudo mkdir -p /etc/apt/keyrings \ 
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+  && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list \
+  && add-apt-repository -y -n ppa:git-core/ppa \
   && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash \
-  && sudo apt-get install git-lfs
+  && apt-get update \
+  && apt-get -y install --no-install-recommends git git-lfs nodejs firefox chromium-browser \
+  && npm -g install https://github.com/maphstr/mdpdf.git \
+  && npm install -g @withgraphite/graphite-cli@stable
 
 WORKDIR /opt
 

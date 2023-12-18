@@ -1,0 +1,59 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches: ['main']
+  pull_request:  
+
+env:
+  DOCKER_IMAGE_NAME: ghcr.io/staflsystems/stafl-devcontainer-ci
+  
+jobs:
+  push_to_registry:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine Version
+        if: github.ref == 'refs/heads/main'
+        id: staflversion
+        uses: StaflSystems/CustomGithubActions/DetermineVersion@main
+      
+      - name: Display Version
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Version: ${{steps.staflversion.outputs.full}}"
+      
+      - name: Build Docker image
+        if: github.ref != 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ github.workspace }}/stafl-devcontainer
+          push: false
+          tags: ghcr.io/staflsystems/stafl-devcontainer-ci
+
+      - name: Build and Push Docker image
+        if: github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ github.workspace }}/stafl-devcontainer
+          push: true
+          tags: | 
+            ${{ env.DOCKER_IMAGE_NAME }}:latest
+            ${{ env.DOCKER_IMAGE_NAME }}:${{ steps.staflversion.outputs.major }}.${{ steps.staflversion.outputs.minor }}.${{ steps.staflversion.outputs.patch }}-${{ steps.staflversion.outputs.build }}
+
+      - name: Create a GitHub release (main)
+        if: github.ref == 'refs/heads/main'
+        uses: StaflSystems/release-action@main
+        with:
+          tag: ${{ steps.staflversion.outputs.full }}
+          commit: ${{ github.sha }}

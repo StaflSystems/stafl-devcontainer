@@ -19,7 +19,7 @@
 
 	"remoteUser": "vscode",
 	"mounts": [
-		// "src=/home/<YOUR_WSL_USERNAME>/projects,target=/home/vscode/projects,type=bind", // Replace with you WSL username
+		"src=/home/osadmin/projects,target=/home/vscode/projects,type=bind", // Replace `osadmin` with your WSL username
 		"source=/mnt/wslg,target=/mnt/wslg,type=bind", // comment out if not on Windows 11
 		"source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind" // comment out if not on Windows 11
 	],
