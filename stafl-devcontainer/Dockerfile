@@ -27,7 +27,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash \
   && apt-get update \
   && apt-get -y install --no-install-recommends git git-lfs nodejs firefox chromium-browser \
-  && npm -g install https://github.com/maphstr/mdpdf.git \
+  && npm install -g https://github.com/maphstr/mdpdf.git \
   && npm install -g @withgraphite/graphite-cli@stable
 
 WORKDIR /opt
@@ -75,6 +75,11 @@ RUN case ${TARGETPLATFORM} in \
   && sudo apt install -y ./jlink_install.deb \
   && rm ./jlink_install.deb
 
+# Install SafeRTOS JLink plug-in
+ADD utilities/RTOSPlugin_SafeRTOS_ubuntu-latest.so /opt/stafl-systems/RTOSPlugin_SafeRTOS_ubuntu-latest.so
+RUN chmod +x /opt/stafl-systems/RTOSPlugin_SafeRTOS_ubuntu-latest.so
+
+# Install structurizr-cli
 ARG STRUCTURIZR_CLI_URL="https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip"
 RUN sudo wget -q "${STRUCTURIZR_CLI_URL}" -O ./structurizr.zip \
     && sudo unzip structurizr.zip -d /usr/bin/structurizr  \
