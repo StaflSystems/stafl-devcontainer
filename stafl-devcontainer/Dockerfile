@@ -11,7 +11,7 @@ ADD user-setup-scripts /user-setup-scripts
 
 RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
-  && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 doxygen g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev python3.10-venv gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common udev ksh ripgrep bash-completion ca-certificates curl gnupg dos2unix\
+  && apt-get -y install --no-install-recommends curl clang llvm-14 clang-format-14 doxygen g++ lcov gdb ninja-build wget bzip2 python2.7-dev python3 python3-pip python3-dev python3.10-venv gcc-multilib-mips-linux-gnu gcc-mips-linux-gnu g++-mips-linux-gnu qemu-user libncurses5 graphviz plantuml make software-properties-common udev ksh ripgrep bash-completion ca-certificates curl gnupg dos2unix openjdk-17-jdk \
   && find -path '/user-setup-scripts/*' | xargs dos2unix \
   && pip install cmake \
   && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
