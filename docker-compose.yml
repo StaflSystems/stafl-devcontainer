@@ -4,19 +4,12 @@ services:
   stafl-devcontainer:
     image: "ghcr.io/staflsystems/stafl-devcontainer-ci:latest"
     command: sleep infinity
-    network_mode: service:kroki
     volumes:
       - ..:/workspaces:cached
       - data:/home/vscode
   kroki:
-    image: yuzutech/kroki:latest
-    ports:
-      - 8000:8000
+    image: ghcr.io/staflsystems/kroki:latest
 
 volumes:
   data:
     name: stafl-devcontainer-data
-
-
-
-    
