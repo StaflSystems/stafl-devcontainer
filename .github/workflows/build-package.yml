@@ -2,14 +2,23 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: ['main']
-  pull_request:  
+    branches: [main]
+  pull_request:
+    types: [
+        opened,
+        synchronize,
+        reopened,
+      ]
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}-${{ github.ref == 'refs/heads/main' && github.sha || ''}}
+  cancel-in-progress: true
 
 env:
   DOCKER_IMAGE_NAME: ghcr.io/staflsystems/stafl-devcontainer-ci
   
 jobs:
-  push_to_registry:
+  build_and_push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     steps:
@@ -18,6 +27,10 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -43,6 +56,9 @@ jobs:
           context: ${{ github.workspace }}/stafl-devcontainer
           push: false
           tags: ghcr.io/staflsystems/stafl-devcontainer-ci
+          platforms: linux/amd64,linux/arm64/v8
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and Push Docker image
         if: github.ref == 'refs/heads/main'
@@ -53,6 +69,9 @@ jobs:
           tags: | 
             ${{ env.DOCKER_IMAGE_NAME }}:latest
             ${{ env.DOCKER_IMAGE_NAME }}:${{ steps.staflversion.outputs.major }}.${{ steps.staflversion.outputs.minor }}.${{ steps.staflversion.outputs.patch }}-${{ steps.staflversion.outputs.build }}
+          platforms: linux/amd64,linux/arm64/v8
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Create a GitHub release (main)
         if: github.ref == 'refs/heads/main'
