@@ -80,6 +80,15 @@ RUN case ${TARGETPLATFORM} in \
 ADD utilities/RTOSPlugin_SafeRTOS_ubuntu-latest.so /opt/stafl-systems/RTOSPlugin_SafeRTOS_ubuntu-latest.so
 RUN chmod +x /opt/stafl-systems/RTOSPlugin_SafeRTOS_ubuntu-latest.so
 
+# Install Customized llvm-cov
+ADD utilities/llvm-cov* /tmp/llvm-cov/
+RUN case ${TARGETPLATFORM} in \
+  "linux/amd64") cp /tmp/llvm-cov/llvm-cov-x86_64 /usr/bin/llvm-cov ;; \
+  "linux/arm64") cp /tmp/llvm-cov/llvm-cov-aarch64 /usr/bin/llvm-cov ;; \
+  esac \
+  && rm -rf /tmp/llvm-cov \
+  && chmod +x /usr/bin/llvm-cov
+
 # Install structurizr-cli
 ARG STRUCTURIZR_CLI_URL="https://github.com/structurizr/cli/releases/download/v2024.03.03/structurizr-cli.zip"
 RUN sudo wget -q "${STRUCTURIZR_CLI_URL}" -O ./structurizr.zip \
