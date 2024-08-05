@@ -31,7 +31,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
 WORKDIR /opt
 
-# Install GCC ARM
+# Install GCC ARM 10.3
 RUN case ${TARGETPLATFORM} in \
   "linux/amd64") GCC_ARM_ARCH=x86_64  ;; \
   "linux/arm64") GCC_ARM_ARCH=aarch64 ;; \
@@ -42,6 +42,19 @@ RUN case ${TARGETPLATFORM} in \
   && rm gcc-arm-none-eabi.tar.bz2 \
   && mv gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb-non-py \
   && ln -s /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb-py /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb
+
+# Install GCC ARM 13.3 Rel 1
+RUN case ${TARGETPLATFORM} in \
+  "linux/amd64") GCC_ARM_ARCH=x86_64  ;; \
+  "linux/arm64") GCC_ARM_ARCH=aarch64 ;; \
+  esac \
+  && wget -q https://developer.arm.com/-/media/Files/downloads/gnu/13.3.rel1/binrel/arm-gnu-toolchain-13.3.rel1-$GCC_ARM_ARCH-arm-none-eabi.tar.xz \
+   -O gcc-arm-none-eabi.tar.xz \
+  && tar -xf gcc-arm-none-eabi.tar.xz \
+  && rm gcc-arm-none-eabi.tar.xz \
+  && mv arm-gnu-toolchain-13.3.rel1-${GCC_ARM_ARCH}-arm-none-eabi gcc-arm-none-eabi-13.3.rel1 \
+  && mv gcc-arm-none-eabi-13.3.rel1/bin/arm-none-eabi-gdb gcc-arm-none-eabi-13.3.rel1/bin/arm-none-eabi-gdb-non-py \
+  && ln -s /opt/gcc-arm-none-eabi-13.3.rel1/bin/arm-none-eabi-gdb-py /opt/gcc-arm-none-eabi-13.3.rel1/bin/arm-none-eabi-gdb
 
 # # Install TI CGT ARM
 RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
@@ -58,7 +71,7 @@ RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
   fi
 
 # Allow opt dir to be written
-RUN chmod -R -v 777 /opt
+RUN chmod -R 777 /opt
 
 WORKDIR /
 
