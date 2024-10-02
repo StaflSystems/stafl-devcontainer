@@ -77,8 +77,8 @@ WORKDIR /
 
 #### Install jlink ####
 # URLs copied from https://www.segger.com/downloads/jlink/
-ARG JLINK_URL_x86_64="https://www.segger.com/downloads/jlink/JLink_Linux_V796e_x86_64.deb"
-ARG JLINK_URL_ARM="https://www.segger.com/downloads/jlink/JLink_Linux_V796e_arm64.deb"
+ARG JLINK_URL_x86_64="https://www.segger.com/downloads/jlink/JLink_Linux_V798i_x86_64.deb"
+ARG JLINK_URL_ARM="https://www.segger.com/downloads/jlink/JLink_Linux_V798i_arm64.deb"
 
 RUN case ${TARGETPLATFORM} in \
   "linux/amd64") JLINK_URL=$JLINK_URL_x86_64 ;; \
