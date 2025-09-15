@@ -14,7 +14,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get --no-install-recommends -y full-upgrade \
   && apt-get -y install --no-install-recommends bash-completion bzip2 ca-certificates clang clang-format-14 curl curl \ 
      dos2unix doxygen g++ g++-mips-linux-gnu gcc-mips-linux-gnu gcc-multilib-mips-linux-gnu gdb gdb-multiarch git git-lfs \
-     gnupg graphviz inetutils-ping ksh lcov libncurses5 llvm-14 make ninja-build openjdk-17-jdk plantuml python2.7-dev python3 python3-dev \
+     gnupg graphviz inetutils-ping ksh lcov libncurses5 llvm-14 lldb-14 make ninja-build openjdk-17-jdk plantuml python2.7-dev python3 python3-dev \
      python3-pip python3.10-venv qemu-user ripgrep software-properties-common udev wget \
   && find -path '/user-setup-scripts/*' | xargs dos2unix \
   && pip install cmake \
