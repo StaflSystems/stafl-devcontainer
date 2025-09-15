@@ -11,6 +11,7 @@ ADD user-setup-scripts /user-setup-scripts
 
 RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
+  && apt-get --no-install-recommends -y full-upgrade \
   && apt-get -y install --no-install-recommends bash-completion bzip2 ca-certificates clang clang-format-14 curl curl \ 
      dos2unix doxygen g++ g++-mips-linux-gnu gcc-mips-linux-gnu gcc-multilib-mips-linux-gnu gdb gdb-multiarch git git-lfs \
      gnupg graphviz inetutils-ping ksh lcov libncurses5 llvm-14 make ninja-build openjdk-17-jdk plantuml python2.7-dev python3 python3-dev \
@@ -77,8 +78,8 @@ WORKDIR /
 
 #### Install jlink ####
 # URLs copied from https://www.segger.com/downloads/jlink/
-ARG JLINK_URL_x86_64="https://www.segger.com/downloads/jlink/JLink_Linux_V798i_x86_64.deb"
-ARG JLINK_URL_ARM="https://www.segger.com/downloads/jlink/JLink_Linux_V798i_arm64.deb"
+ARG JLINK_URL_x86_64="https://www.segger.com/downloads/jlink/JLink_Linux_V868_x86_64.deb"
+ARG JLINK_URL_ARM="https://www.segger.com/downloads/jlink/JLink_Linux_V868_arm64.deb"
 
 RUN case ${TARGETPLATFORM} in \
   "linux/amd64") JLINK_URL=$JLINK_URL_x86_64 ;; \
