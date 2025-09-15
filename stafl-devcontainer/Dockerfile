@@ -17,7 +17,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
      gnupg graphviz inetutils-ping ksh lcov libncurses5 llvm-14 lldb-14 make ninja-build openjdk-17-jdk plantuml python2.7-dev python3 python3-dev \
      python3-pip python3.10-venv qemu-user ripgrep software-properties-common udev wget \
   && find -path '/user-setup-scripts/*' | xargs dos2unix \
-  && pip install cmake \
+  && pip install cmake==4.0.3 \
   && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
   && ln -s /usr/bin/llvm-profdata-14 /usr/bin/llvm-profdata \
   && add-apt-repository -y -n ppa:saiarcot895/chromium-beta \
