@@ -1,48 +1,49 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.205.1/containers/ubuntu/.devcontainer/base.Dockerfile
+# See here for image contents: https://github.com/docker-library/buildpack-deps/blob/master/ubuntu/resolute/curl/Dockerfile
 
-ARG VARIANT="jammy"
+ARG VARIANT="resolute"
 
-FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
+FROM buildpack-deps:${VARIANT}-curl
 ARG VARIANT
 ARG TARGETPLATFORM
 
-# Add user setup scripts
-ADD user-setup-scripts /user-setup-scripts
+# Remove 'ubuntu' user
+RUN if [ "$VARIANT" = "noble" ] || [ "$VARIANT" = "resolute" ]; then \
+    if id "ubuntu" &>/dev/null; then \
+        echo "Deleting user 'ubuntu'  for $VARIANT" && userdel -f -r ubuntu || echo "Failed to delete ubuntu user for $VARIANT"; \
+    else \
+         echo "User 'ubuntu' does not exist for $VARIANT"; \
+    fi; \
+    fi
+
+RUN apt-get update \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y reinstall --no-install-recommends tzdata unzip \
+    && echo "Etc/UTC" > /etc/timezone \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -s -o features.zip https://codeload.github.com/devcontainers/features/zip/refs/heads/main \
+  && unzip features.zip \
+  && USERNAME=vscode USER_UID=1000 USER_GID=1000 bash features-main/src/common-utils/install.sh \
+  && rm -rf features-main features.zip
+
 
 RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
   && apt-get --no-install-recommends -y full-upgrade \
-  && apt-get -y install --no-install-recommends bash-completion bzip2 ca-certificates clang clang-format-14 curl curl \ 
-     dos2unix doxygen g++ g++-mips-linux-gnu gcc-mips-linux-gnu gcc-multilib-mips-linux-gnu gdb gdb-multiarch git git-lfs \
-     gnupg graphviz inetutils-ping ksh lcov libncurses5 llvm-14 lldb-14 make ninja-build openjdk-17-jdk plantuml python2.7-dev python3 python3-dev \
-     python3-pip python3.10-venv qemu-user ripgrep software-properties-common udev wget \
-  && find -path '/user-setup-scripts/*' | xargs dos2unix \
-  && pip install cmake==4.0.3 \
-  && ln -s /usr/bin/llvm-cov-14 /usr/bin/llvm-cov \
-  && ln -s /usr/bin/llvm-profdata-14 /usr/bin/llvm-profdata \
-  && add-apt-repository -y -n ppa:saiarcot895/chromium-beta \
-  && sudo mkdir -p /etc/apt/keyrings \ 
-  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-  && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" \ 
-    | sudo tee /etc/apt/sources.list.d/nodesource.list \
+  && apt-get -y install --no-install-recommends bash-completion bzip2 ca-certificates clang clang-format curl \ 
+     dos2unix doxygen g++ g++-s390x-linux-gnu gcc-s390x-linux-gnu gdb gdb-multiarch git git-lfs \
+     gnupg graphviz inetutils-ping ksh lcov llvm lldb libclang-rt-dev make ninja-build openjdk-25-jdk plantuml python3 python3-dev \
+     python3-pip python3-venv qemu-user ripgrep software-properties-common udev wget xz-utils \
+  && add-apt-repository -y -n ppa:xtradeb/apps \
+  && add-apt-repository -y -n ppa:deadsnakes/ppa \
+  && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
   && apt-get update \
-  && apt-get -y install --no-install-recommends nodejs chromium-browser \
+  && apt-get -y install --no-install-recommends nodejs chromium libpython3.8 \
   && npm install -g https://github.com/maphstr/mdpdf.git \
-  && npm install -g @withgraphite/graphite-cli@stable
+  && npm install -g @withgraphite/graphite-cli@stable \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
-
-# Install GCC ARM 10.3
-RUN case ${TARGETPLATFORM} in \
-  "linux/amd64") GCC_ARM_ARCH=x86_64  ;; \
-  "linux/arm64") GCC_ARM_ARCH=aarch64 ;; \
-  esac \
-  && wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-$GCC_ARM_ARCH-linux.tar.bz2 \
-   -O gcc-arm-none-eabi.tar.bz2 \
-  && tar -xjf gcc-arm-none-eabi.tar.bz2 \
-  && rm gcc-arm-none-eabi.tar.bz2 \
-  && mv gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb-non-py \
-  && ln -s /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb-py /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb
 
 # Install GCC ARM 13.3 Rel 1
 RUN case ${TARGETPLATFORM} in \
@@ -57,49 +58,65 @@ RUN case ${TARGETPLATFORM} in \
   && mv gcc-arm-none-eabi-13.3.rel1/bin/arm-none-eabi-gdb gcc-arm-none-eabi-13.3.rel1/bin/arm-none-eabi-gdb-non-py \
   && ln -s /opt/gcc-arm-none-eabi-13.3.rel1/bin/arm-none-eabi-gdb-py /opt/gcc-arm-none-eabi-13.3.rel1/bin/arm-none-eabi-gdb
 
-# # Install TI CGT ARM
-RUN if [ "$TARGETPLATFORM" != "linux/arm64" ]; then \
-  echo "Installing TI CGT TMS470" \
-  && wget -q https://software-dl.ti.com/codegen/esd/cgt_public_sw/TMS470/20.2.5.LTS/ti_cgt_tms470_20.2.5.LTS_linux-x64_installer.bin \
-   -O ti-cgt-installer.bin \
-  && chmod +x ti-cgt-installer.bin \
-  && ./ti-cgt-installer.bin --mode=unattended --prefix /opt/ti-cgt-arm \
-  && rm ti-cgt-installer.bin \
-  && PATH=/opt/ti-cgt-arm/ti-cgt-arm_20.2.5.LTS/bin:$PATH /opt/ti-cgt-arm/ti-cgt-arm_20.2.5.LTS/lib/mklib --pattern=rtsv7M4_T_le_v4SPD16_eabi_eh.lib \
-  && chmod -R 777 /opt/ti-cgt-arm; \
-  else \
-  echo "skipping TI CGT TMS470. Not supported on arm64"; \
-  fi
-
-# Allow opt dir to be written
-RUN chmod -R 777 /opt
+# Install GCC ARM 15.2 Rel 1
+RUN case ${TARGETPLATFORM} in \
+  "linux/amd64") GCC_ARM_ARCH=x86_64  ;; \
+  "linux/arm64") GCC_ARM_ARCH=aarch64 ;; \
+  esac \
+  && wget -q https://developer.arm.com/-/media/Files/downloads/gnu/15.2.rel1/binrel/arm-gnu-toolchain-15.2.rel1-$GCC_ARM_ARCH-arm-none-eabi.tar.xz \
+   -O gcc-arm-none-eabi.tar.xz \
+  && tar -xf gcc-arm-none-eabi.tar.xz \
+  && rm gcc-arm-none-eabi.tar.xz \
+  && mv arm-gnu-toolchain-15.2.rel1-${GCC_ARM_ARCH}-arm-none-eabi gcc-arm-none-eabi-15.2.rel1 \
+  && mv gcc-arm-none-eabi-15.2.rel1/bin/arm-none-eabi-gdb gcc-arm-none-eabi-15.2.rel1/bin/arm-none-eabi-gdb-non-py \
+  && ln -s /opt/gcc-arm-none-eabi-15.2.rel1/bin/arm-none-eabi-gdb-py /opt/gcc-arm-none-eabi-15.2.rel1/bin/arm-none-eabi-gdb
 
 WORKDIR /
 
 #### Install jlink ####
 # URLs copied from https://www.segger.com/downloads/jlink/
-ARG JLINK_URL_x86_64="https://www.segger.com/downloads/jlink/JLink_Linux_V868_x86_64.deb"
-ARG JLINK_URL_ARM="https://www.segger.com/downloads/jlink/JLink_Linux_V868_arm64.deb"
+ARG JLINK_URL_x86_64="https://www.segger.com/downloads/jlink/JLink_Linux_V938_x86_64.deb"
+ARG JLINK_URL_ARM="https://www.segger.com/downloads/jlink/JLink_Linux_V938_arm64.deb"
 
 RUN case ${TARGETPLATFORM} in \
   "linux/amd64") JLINK_URL=$JLINK_URL_x86_64 ;; \
   "linux/arm64") JLINK_URL=$JLINK_URL_ARM ;; \
   esac \
-  && sudo wget -q "$JLINK_URL" --post-data="accept_license_agreement=accepted" -O ./jlink_install.deb \
-  && sudo /lib/systemd/systemd-udevd --daemon \
-  && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends ./jlink_install.deb \
-  && rm ./jlink_install.deb
+  && wget -q "$JLINK_URL" --post-data="accept_license_agreement=accepted" -O ./jlink_install.deb \
+  && /lib/systemd/systemd-udevd --daemon \
+  && apt update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ./jlink_install.deb \
+  && rm ./jlink_install.deb \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install SafeRTOS JLink plug-in
 ADD utilities/RTOSPlugin_SafeRTOS_ubuntu-latest.so /opt/stafl-systems/RTOSPlugin_SafeRTOS_ubuntu-latest.so
 RUN chmod +x /opt/stafl-systems/RTOSPlugin_SafeRTOS_ubuntu-latest.so
 
-# Install structurizr-cli
-ARG STRUCTURIZR_CLI_URL="https://github.com/structurizr/cli/releases/download/v2024.03.03/structurizr-cli.zip"
-RUN sudo wget -q "${STRUCTURIZR_CLI_URL}" -O ./structurizr.zip \
-    && sudo unzip structurizr.zip -d /opt/structurizr  \
-    && sudo mkdir -p /usr/bin/structurizr \
-    && sudo ln -s /opt/structurizr/structurizr.sh /opt/structurizr/structurizr \
-    && sudo ln -s /opt/structurizr/structurizr.sh /usr/bin/structurizr/structurizr \
-    && sudo rm structurizr.zip
-  
+#### Install CMake ####
+ARG CMAKE_VERSION="4.3.2"
+RUN case ${TARGETPLATFORM} in \
+  "linux/amd64") CMAKE_ARCH=x86_64  ;; \
+  "linux/arm64") CMAKE_ARCH=aarch64 ;; \
+  esac \
+  && wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-${CMAKE_ARCH}.sh -O cmake.sh \
+  && chmod +x cmake.sh \
+  && bash cmake.sh --skip-license --prefix=/usr/local \
+  && rm cmake.sh
+
+#### Install CCache ####
+RUN case ${TARGETPLATFORM} in \
+  "linux/amd64") CCACHE_ARCH=x86_64  ;; \
+  "linux/arm64") CCACHE_ARCH=aarch64 ;; \
+  esac \
+  && wget -q https://github.com/StaflSystems/ccache/releases/download/v4.12.2/ccache-iarsupport.26383df4-linux-${CCACHE_ARCH}.tar.xz -O ccache.tar.xz \
+  && tar -xf ccache.tar.xz \
+  && mv ccache-iarsupport.26383df4-linux-${CCACHE_ARCH}/ccache /usr/local/bin/ccache \
+  && rm ccache.tar.xz \
+  && rm -rf ccache-iarsupport.26383df4-linux-${CCACHE_ARCH}
+
+  # Add user setup scripts
+ADD user-setup-scripts /user-setup-scripts
+
+#### Install UV ####
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/bin/

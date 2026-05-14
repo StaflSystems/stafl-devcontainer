@@ -18,6 +18,7 @@
 	"workspaceFolder": "/home/vscode",
 
 	"remoteUser": "vscode",
+	"containerUser": "vscode",
 	"mounts": [
 		"src=/home/osadmin/projects,target=/home/vscode/projects,type=bind", // Replace `osadmin` with your WSL username
 		"source=/mnt/wslg,target=/mnt/wslg,type=bind", // comment out if not on Windows 11
