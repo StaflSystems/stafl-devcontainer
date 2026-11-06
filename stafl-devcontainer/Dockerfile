@@ -32,7 +32,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get --no-install-recommends -y full-upgrade \
   && apt-get -y install --no-install-recommends bash-completion bzip2 ca-certificates clang clang-format curl \ 
      dos2unix doxygen g++ g++-s390x-linux-gnu gcc-s390x-linux-gnu gdb gdb-multiarch git git-lfs \
-     gnupg graphviz inetutils-ping ksh lcov llvm lldb libclang-rt-dev make ninja-build openjdk-25-jdk plantuml python3 python3-dev \
+     gnupg graphviz inetutils-ping ksh lcov libegl1 llvm lldb libclang-rt-dev make ninja-build openjdk-25-jdk plantuml python3 python3-dev \
      python3-pip python3-venv qemu-user ripgrep software-properties-common udev wget xz-utils \
   && add-apt-repository -y -n ppa:xtradeb/apps \
   && add-apt-repository -y -n ppa:deadsnakes/ppa \
@@ -119,4 +119,4 @@ RUN case ${TARGETPLATFORM} in \
 ADD user-setup-scripts /user-setup-scripts
 
 #### Install UV ####
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.7 /uv /uvx /usr/bin/
