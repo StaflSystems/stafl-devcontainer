@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   stafl-devcontainer:
     image: "ghcr.io/staflsystems/stafl-devcontainer-ci:latest"
