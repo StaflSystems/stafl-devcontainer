@@ -115,8 +115,16 @@ RUN case ${TARGETPLATFORM} in \
   && rm ccache.tar.xz \
   && rm -rf ccache-iarsupport.26383df4-linux-${CCACHE_ARCH}
 
-  # Add user setup scripts
+# Add user setup scripts
 ADD user-setup-scripts /user-setup-scripts
+
+#### Install the RTOS Viewer VSCode extension
+ARG RTOS_VIEWS_CHECKSUM=8e273427d90d89e7f3ced12ba902278b865dc18effe206d17dd15496020073b1
+ADD --checksum=sha256:${RTOS_VIEWS_CHECKSUM} --chmod=644 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/mcu-debug/vsextensions/rtos-views/0.0.18/vspackage /user-setup-scripts/rtos-views/rtos-views-0.0.18.vsix
+
+#### Install the Peripheral Inspector VSCode extension
+ARG PI_CHECKSUM=260051771f66298d2b8292c27a94002b66501e873b945fcac9ebb7116d005eef
+ADD --checksum=sha256:${PI_CHECKSUM} --chmod=644 https://open-vsx.org/api/eclipse-cdt/peripheral-inspector/1.9.0/file/eclipse-cdt.peripheral-inspector-1.9.0.vsix /user-setup-scripts/peripheral-viewer/
 
 #### Install UV ####
 COPY --from=ghcr.io/astral-sh/uv:0.13.7 /uv /uvx /usr/bin/
